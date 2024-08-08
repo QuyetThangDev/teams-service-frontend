@@ -1,4 +1,4 @@
-# TBE-frontend-vue
+# viot-frontend
 
 This template should help get you started developing with Vue 3 in Vite.
 
@@ -43,11 +43,3 @@ pnpm test:unit
 ```sh
 pnpm lint
 ```
-# tbe_frontend
-# tbe_frontend
-# tbe_frontend
-# tbe_frontend
-# tbe_frontend
-# tbe_frontend
-# tbe_frontend
-# teams-service-frontend
