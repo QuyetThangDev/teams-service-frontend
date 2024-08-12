@@ -72,8 +72,7 @@ const validationSchema = toTypedSchema(
 
 const { handleSubmit, errors, meta, resetForm } = useForm({
   initialValues: {
-    name: '',
-    description: ''
+    name: ''
   },
   validationSchema: validationSchema
 })

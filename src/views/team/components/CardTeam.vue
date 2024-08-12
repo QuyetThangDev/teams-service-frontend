@@ -3,6 +3,9 @@
     <Card
       class="border sm:min-w-[25rem] sm:min-h-[12rem] flex justify-center items-center border-gray-300 shadow-none"
     >
+      <!-- Hiển thị dialog -->
+      <DialogEditTeam :isOpen="isDialogOpen" @close="isDialogOpen = false" />
+
       <div v-if="isPending" class="flex items-center justify-center w-full h-full">
         <Loader2 class="flex items-center justify-center w-6 h-6 text-blue-600 animate-spin" />
       </div>
@@ -13,10 +16,10 @@
               class="flex flex-row items-center col-span-4 gap-2 text-gray-500 shadow-none text-md"
             >
               <div class="flex items-center justify-center w-8 h-8 bg-gray-100 rounded-full">
-                <Youtube class="w-4 h-4 text-gray-500" />
+                <FolderKanban class="w-4 h-4 text-gray-500" />
               </div>
-              Project name</CardTitle
-            >
+              Project name
+            </CardTitle>
             <div class="flex justify-end col-span-1">
               <DropdownMenu>
                 <DropdownMenuTrigger as-child>
@@ -27,16 +30,9 @@
                   </div>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent class="w-full">
-                  <DropdownMenuCheckboxItem
-                    v-model:checked="showProject"
-                    :class="{ 'bg-gray-100': showProject }"
-                  >
-                    Project
-                  </DropdownMenuCheckboxItem>
-                  <DropdownMenuCheckboxItem v-model:checked="showTeamMember">
-                    Team Member
-                  </DropdownMenuCheckboxItem>
-                  <DropdownMenuCheckboxItem v-model:checked="showPanel">
+                  <DropdownMenuCheckboxItem> Project </DropdownMenuCheckboxItem>
+                  <DropdownMenuCheckboxItem> Team Member </DropdownMenuCheckboxItem>
+                  <DropdownMenuCheckboxItem @click="handleShowPanel">
                     Panel
                   </DropdownMenuCheckboxItem>
                 </DropdownMenuContent>
@@ -55,7 +51,6 @@
 </template>
 
 <script setup lang="ts">
-import { Button } from '@/components/ui/button'
 import {
   Card,
   CardContent,
@@ -65,45 +60,26 @@ import {
   CardTitle
 } from '@/components/ui/card'
 
-import { computed, ref } from 'vue'
-import { useRoute } from 'vue-router'
+import { ref, watch } from 'vue'
 
-import {
-  CircleUser,
-  EllipsisVertical,
-  Loader2,
-  Menu,
-  Package2,
-  Search,
-  Youtube
-} from 'lucide-vue-next'
-
-import { Checkbox } from '@/components/ui/checkbox'
+import { EllipsisVertical, FolderKanban, Loader2, Package, Youtube } from 'lucide-vue-next'
 
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
-import { Input } from '@/components/ui/input'
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
-import { useMutation, useQuery } from '@tanstack/vue-query'
+import DialogEditTeam from '@/views/team/components/DialogEditTeam.vue'
+import { useQuery } from '@tanstack/vue-query'
 import { getTeams } from '@/api/teams'
-import { useToast } from '@/components/ui/toast'
-import type { DropdownMenuCheckboxItemProps } from 'radix-vue'
 
-type Checked = DropdownMenuCheckboxItemProps['checked']
+const isDialogOpen = ref(false)
 
-const showProject = ref<Checked>(true)
-const showTeamMember = ref<Checked>(false)
-const showPanel = ref<Checked>(false)
-
-const route = useRoute()
-const { toast } = useToast()
-const currentTeamId = computed(() => route.params.id)
+const handleShowPanel = () => {
+  isDialogOpen.value = !isDialogOpen.value
+  console.log(isDialogOpen.value)
+}
 
 const {
   isPending,

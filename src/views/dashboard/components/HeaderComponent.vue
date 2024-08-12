@@ -72,8 +72,7 @@ const { mutate: handleNotification } = useMutation({
 })
 
 const formatDate = (date: string | Date) => {
-  const dateObj = new Date(date)
-  return format(dateObj, 'dd/MM/yyyy HH:mm')
+  return format(date, 'dd/MM/yyyy HH:mm')
 }
 
 onMounted(() => {

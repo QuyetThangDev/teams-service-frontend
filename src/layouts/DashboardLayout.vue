@@ -7,7 +7,9 @@
     <div v-else-if="subNav === 'navbarAccount'">
       <NavbarAccount class="sticky top-0 z-10" />
     </div>
-    <span v-else> Nav 3 </span>
+    <div v-else>
+      <NavbarTeam class="sticky top-0 z-10" />
+    </div>
     <main class="flex flex-col items-center justify-center flex-1 gap-4 overflow-auto">
       <router-view />
     </main>

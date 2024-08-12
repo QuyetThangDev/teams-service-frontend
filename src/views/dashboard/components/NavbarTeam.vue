@@ -6,10 +6,10 @@
       >
         <a href="#" class="transition-colors text-foreground hover:text-foreground"> Dashboard </a>
         <a href="#" class="transition-colors text-muted-foreground hover:text-foreground">
-          Orders
+          Devices
         </a>
         <a href="#" class="transition-colors text-muted-foreground hover:text-foreground">
-          Customers
+          Members
         </a>
         <span href="#" class="transition-colors text-muted-foreground hover:text-foreground">
           <RouterLink to="/account"> Settings</RouterLink>

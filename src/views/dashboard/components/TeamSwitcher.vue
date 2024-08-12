@@ -57,13 +57,29 @@ watch(data, (newVal) => {
 
     if (currentTeamId.value && currentTeam !== undefined) {
       selectedTeam.value = currentTeam
-      router.replace({ name: 'Team', params: { id: selectedTeam.value.id } })
+
+      // Chỉ chuyển hướng nếu không ở trong các route như AccountSettings
+      if (
+        router.currentRoute.value.name !== 'AccountSettings' &&
+        router.currentRoute.value.name !== 'AccountOverview' &&
+        router.currentRoute.value.name !== 'DomainsSettings'
+      ) {
+        router.replace({ name: 'Team', params: { id: selectedTeam.value.id } })
+      }
     } else if (newVal.items.length === 0) {
       selectedTeam.value = null
       router.replace({ name: 'Empty' })
     } else {
       selectedTeam.value = newVal.items[0]
-      // router.replace({ name: 'Team', params: { id: selectedTeam.value.id } })
+
+      // Chỉ chuyển hướng nếu không ở trong các route như AccountSettings
+      if (
+        router.currentRoute.value.name !== 'AccountSettings' &&
+        router.currentRoute.value.name !== 'AccountOverview' &&
+        router.currentRoute.value.name !== 'DomainsSettings'
+      ) {
+        router.replace({ name: 'Team', params: { id: selectedTeam.value.id } })
+      }
     }
   }
 })
