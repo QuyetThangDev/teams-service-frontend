@@ -48,5 +48,5 @@ watch(showTeamMember, (newVal) => {
   </DropdownMenu>
 
   <!-- Dialog component -->
-  <DialogEditTeam v-if="isDialogOpen" @close="isDialogOpen = false" />
+  <!-- <DialogEditTeam v-if="isDialogOpen" @close="isDialogOpen = false" /> -->
 </template>
