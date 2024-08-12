@@ -15,6 +15,39 @@ export interface Section {
 export default (): {
   sections: Section[]
 } => {
+  const dashboardMenus = [
+    {
+      title: 'Dashboard',
+      path: '/dashboard'
+    },
+    {
+      title: 'Devices',
+      path: '/devices'
+    },
+    { title: 'Settings', path: '/settings' }
+  ]
+  const teamSettingMenus = [
+    {
+      title: 'General',
+      path: ''
+    },
+    {
+      title: 'Invoices',
+      path: '/invoices'
+    },
+    {
+      title: 'Members',
+      path: '/members'
+    },
+    {
+      title: 'Access Groups',
+      path: '/access-groups'
+    },
+    {
+      title: 'Security & Privacy',
+      path: '/security'
+    }
+  ]
   const accountMenus = [
     {
       title: 'Overview',
@@ -51,6 +84,14 @@ export default (): {
   ]
 
   const sections = [
+    {
+      sectionName: 'Dashboard',
+      menus: dashboardMenus
+    },
+    {
+      sectionName: 'Teams Settings',
+      menus: teamSettingMenus
+    },
     {
       sectionName: 'Account',
       menus: accountMenus

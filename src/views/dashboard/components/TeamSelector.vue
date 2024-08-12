@@ -87,7 +87,6 @@ watch(data, (newVal) => {
                 :alt="team.name"
                 class="grayscale"
               />
-              <AvatarFallback>SC</AvatarFallback>
             </Avatar>
             {{ team.name }}
             <Check

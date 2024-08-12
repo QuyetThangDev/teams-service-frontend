@@ -109,9 +109,7 @@ const onContinue = () => {
                 aria-label="Select a team"
                 :class="cn('w-[200px] justify-between', $attrs.class ?? '')"
               >
-                <Avatar class="w-6 h-6 mr-2 bg-gray-300">
-                  <AvatarFallback>SC</AvatarFallback>
-                </Avatar>
+                <Avatar class="w-6 h-6 mr-2 bg-gray-300"> </Avatar>
                 <span v-if="selectedTeam" class="flex flex-row items-center justify-between w-full">
                   {{ selectedTeam.name }}
                   <ChevronsUpDown class="w-4 h-4 ml-auto opacity-50 shrink-0" />
@@ -143,7 +141,6 @@ const onContinue = () => {
                           :alt="team.name"
                           class="grayscale"
                         />
-                        <AvatarFallback>SC</AvatarFallback>
                       </Avatar>
                       {{ team.name }}
                       <Check

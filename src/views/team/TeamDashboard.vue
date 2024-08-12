@@ -10,7 +10,7 @@
               <Search class="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
               <Input
                 type="search"
-                placeholder="Search products..."
+                placeholder="Search team..."
                 class="pl-8 sm:w-[200px] md:w-full"
               />
             </div>
@@ -30,15 +30,9 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
-import { useRoute } from 'vue-router'
-
 import { Search } from 'lucide-vue-next'
-
 import { Input } from '@/components/ui/input'
+
 import CardTeam from './components/CardTeam.vue'
 import DropdownTeam from './components/DropdownTeam.vue'
-
-const route = useRoute()
-const currentTeamId = computed(() => route.params.id)
 </script>
