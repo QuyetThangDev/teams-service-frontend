@@ -144,7 +144,6 @@ const {
   mutate
 } = useMutation({
   mutationFn: (user: { first_name: string; last_name: string }) => {
-    console.log(user)
     return updateUser(user)
   },
   onSuccess: (data: any) => {
@@ -163,7 +162,6 @@ const {
 const onSubmit = handleSubmit(async (values) => {
   const isValid = await validate()
   if (isValid) {
-    console.log(isValid)
     mutate({
       first_name: values.firstName,
       last_name: values.lastName

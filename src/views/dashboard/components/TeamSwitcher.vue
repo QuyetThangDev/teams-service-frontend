@@ -1,10 +1,9 @@
 <script setup lang="ts">
 import { useQuery } from '@tanstack/vue-query'
-import { getTeams } from '@/api/teams'
 import { useRouter, useRoute } from 'vue-router'
-import type { Team } from '@/types/team'
 import { computed, ref, watch } from 'vue'
 import { cn } from '@/lib/utils'
+import { useTeamStore } from '@/stores/teamStore'
 
 import { Check, ChevronsUpDown, CirclePlus, Loader2 } from 'lucide-vue-next'
 import { Avatar, AvatarImage } from '@/components/ui/avatar'
@@ -27,9 +26,11 @@ import {
   CommandSeparator
 } from '@/components/ui/command'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
-
 import FormCreateTeam from './FormCreateTeam.vue'
 import DialogAddMember from './DialogAddMember.vue'
+
+import { getTeams } from '@/api/teams'
+import type { Team } from '@/types/team'
 
 const router = useRouter()
 const route = useRoute()
@@ -39,7 +40,6 @@ const showMembersDialog = ref(false)
 const selectedTeam = ref<Team | null>(null)
 const open = ref(false)
 const currentTeamSlug = computed(() => route.params.slug)
-console.log('currentTeamSlug in TeamSwitcher: ', currentTeamSlug.value)
 
 const {
   isLoading,
@@ -52,12 +52,15 @@ const {
   queryFn: getTeams
 })
 
+const teamStore = useTeamStore()
+
 watch(data, (newVal) => {
   if (newVal) {
     const currentTeam = newVal.find((t: Team) => t.slug === currentTeamSlug.value)
 
     if (currentTeamSlug.value && currentTeam !== undefined) {
       selectedTeam.value = currentTeam
+      teamStore.setCurrentTeam(currentTeam)
 
       // Chỉ chuyển hướng nếu không ở trong các route như AccountSettings
       if (

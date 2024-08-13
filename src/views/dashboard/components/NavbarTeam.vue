@@ -51,7 +51,6 @@ import { useRoute } from 'vue-router'
 
 const route = useRoute()
 const currentTeamSlug = computed(() => route.params.slug)
-console.log(currentTeamSlug.value)
 const { sections } = useMenus()
 
 const dashboardMenus = computed(() => {

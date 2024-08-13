@@ -26,9 +26,7 @@ const { isPending, isError, error, isSuccess, mutate } = useMutation({
     })
     emailSent.value = true
   },
-  onError: () => {
-    console.log('Error')
-  }
+  onError: () => {}
 })
 
 const validationSchema = toTypedSchema(

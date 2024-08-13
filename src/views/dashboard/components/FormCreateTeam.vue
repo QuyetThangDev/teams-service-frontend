@@ -104,7 +104,6 @@ const { isPending, mutate } = useMutation({
 })
 
 const onSubmit = handleSubmit((values) => {
-  console.log(values)
   mutate({
     name: values.name,
     description: values.description

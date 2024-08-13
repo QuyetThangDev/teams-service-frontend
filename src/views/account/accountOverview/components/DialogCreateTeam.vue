@@ -122,7 +122,6 @@ const onContinue = () => {
 }
 
 const onFinish = () => {
-  console.log(showMembersDialog.value, showNewTeamDialog.value)
   showMembersDialog.value = false
   toast({
     title: 'Success',

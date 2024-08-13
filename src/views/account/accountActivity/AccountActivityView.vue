@@ -49,7 +49,6 @@ const showDialog = ref(false)
 
 const handleDelete = () => {
   showDialog.value = false
-  console.log('Account deleted')
 }
 
 const handleCancel = () => {

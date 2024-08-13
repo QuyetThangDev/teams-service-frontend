@@ -78,7 +78,6 @@ const isDialogOpen = ref(false)
 
 const handleShowPanel = () => {
   isDialogOpen.value = !isDialogOpen.value
-  console.log(isDialogOpen.value)
 }
 
 const {

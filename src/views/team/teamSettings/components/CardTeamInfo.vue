@@ -66,39 +66,33 @@
 
 <script setup lang="ts">
 import { toTypedSchema } from '@vee-validate/zod'
-import { reactive, ref, watch } from 'vue'
+import { computed, watch } from 'vue'
 import { useMutation, useQuery } from '@tanstack/vue-query'
 import { useForm } from 'vee-validate'
 import * as z from 'zod'
+import { useTeamStore } from '@/stores/teamStore'
 
-import { Card, CardContent, CardFooter, CardTitle } from '@/components/ui/card'
+import { Card, CardContent, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
+import LoadingSpinner from '@/components/LoadingSpinner.vue'
+import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 
 import { useToast } from '@/components/ui/toast'
 import { getCurrentUser } from '@/api/users'
 import { updateUser } from '@/api/auth'
-import LoadingSpinner from '@/components/LoadingSpinner.vue'
-import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
-// import ChangePasswordDialog from './ChangePasswordDialog.vue'
-import { computed } from 'vue'
-import type { UserInfo } from '@/types/user'
 import { NAME_REGEX } from '@/constants/regex'
+import { storeToRefs } from 'pinia'
+import { updateTeam } from '@/api/teams'
 
 const { toast } = useToast()
+const store = useTeamStore()
+const { team } = storeToRefs(store)
 
 const formSchema = toTypedSchema(
   z.object({
-    firstName: z
-      .string()
-      .min(1, 'Last name is required')
-      .max(20, 'Max 20 characters')
-      .regex(NAME_REGEX, 'Only letters allowed'),
-    lastName: z
-      .string()
-      .min(1, 'Last name is required')
-      .max(20, 'Max 20 characters')
-      .regex(NAME_REGEX, 'Only letters allowed')
+    teamName: z.string().min(1, 'Last name is required').max(20, 'Max 20 characters'),
+    description: z.string().optional()
   })
 )
 
@@ -114,18 +108,18 @@ const {
 
 const { handleSubmit, meta, errors, validate, resetForm } = useForm({
   initialValues: {
-    firstName: '',
-    lastName: ''
+    teamName: '',
+    description: ''
   },
   validationSchema: formSchema
 })
 
-watch(currentUser, (newVal) => {
+watch(team, (newVal) => {
   if (newVal) {
     resetForm({
       values: {
-        firstName: newVal.data.first_name,
-        lastName: newVal.data.last_name
+        teamName: newVal.name,
+        description: newVal.description
       }
     })
   }
@@ -138,9 +132,8 @@ const {
   isSuccess: isUpdateSuccess,
   mutate
 } = useMutation({
-  mutationFn: (user: { first_name: string; last_name: string }) => {
-    console.log(user)
-    return updateUser(user)
+  mutationFn: (team: { teamName: string; description?: string }) => {
+    return updateTeam(team)
   },
   onSuccess: (data: any) => {
     toast({
@@ -158,10 +151,9 @@ const {
 const onSubmit = handleSubmit(async (values) => {
   const isValid = await validate()
   if (isValid) {
-    console.log(isValid)
     mutate({
-      first_name: values.firstName,
-      last_name: values.lastName
+      teamName: values.teamName,
+      description: values.description
     })
   } else {
     return

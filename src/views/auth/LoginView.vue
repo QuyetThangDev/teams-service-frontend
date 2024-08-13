@@ -33,7 +33,6 @@ const { isPending, isError, error, isSuccess, mutate } = useMutation({
     router.push({ name: 'Dashboard' })
   },
   onError: (data: any) => {
-    console.log(data)
     toast({
       title: 'Login failed',
       description: 'Invalid email or password.',

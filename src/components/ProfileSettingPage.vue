@@ -78,7 +78,6 @@ const {
   mutate
 } = useMutation({
   mutationFn: (user: { first_name: string; last_name: string }) => {
-    console.log(user)
     return updateUser(user)
   }
 })

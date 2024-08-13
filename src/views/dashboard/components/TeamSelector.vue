@@ -42,8 +42,6 @@ const {
   queryFn: getTeams
 })
 
-console.log(data)
-
 watch(data, (newVal) => {
   if (newVal) {
     const currentTeam = newVal.find((t) => t.id === currentTeamSlug.value)

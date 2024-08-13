@@ -24,3 +24,7 @@ export async function createTeam(obj: TeamCreate) {
 export async function addMember(obj: TeamMember) {
   console.log(obj)
 }
+
+export async function updateTeam(obj: { name?: string; description?: string }) {
+  console.log(obj)
+}
