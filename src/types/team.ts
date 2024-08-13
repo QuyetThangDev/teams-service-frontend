@@ -3,6 +3,7 @@ export interface Team {
   name: string
   description?: string
   default: boolean
+  slug: string
   created_at: Date
   updated_at?: Date
 }

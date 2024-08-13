@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1>Team Settings Members</h1>
+    <h1>Team Dashboard</h1>
   </div>
 </template>
 

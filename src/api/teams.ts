@@ -1,10 +1,6 @@
 import http from '@/utils/http'
 import type { Team } from '@/types/team'
 
-interface TeamsResponse {
-  items: Team[]
-}
-
 interface TeamCreate {
   name: string
   description?: string
@@ -16,7 +12,7 @@ interface TeamMember {
 }
 
 export async function getTeams() {
-  const response = await http.get<TeamsResponse>('/teams')
+  const response = await http.get<Team[]>('/teams')
   return response.data
 }
 

@@ -7,9 +7,13 @@ import { useForm } from 'vee-validate'
 import useMenus from '@/hooks/useMenus'
 
 import { getCurrentUser } from '@/api/users'
-// import DefaultTeam from './components/DefaultTeam.vue'
-// import AccountInfo from './components/AccountInfo.vue'
-// import AccountDelete from './components/AccountDelete.vue'
+import CardTeamInfo from './components/CardTeamInfo.vue'
+import CardTeamDelete from './components/CardTeamDelete.vue'
+import CardTeamMembers from './components/CardTeamMembers.vue'
+import CardTeamAddMembers from './components/CardTeamAddMembers.vue'
+import CardTeamMemberList from './components/CardTeamMemberList.vue'
+// import AccountDelete from '../../components/AccountDelete.vue'
+// import TeamsInfo from '../../components/TeamsInfo.vue'
 // import DialogDeleteAccount from './components/DialogDeleteAccount.vue'
 
 const { sections } = useMenus()
@@ -66,38 +70,13 @@ const handleCancel = () => {
 <template>
   <div class="flex flex-col w-full min-h-screen">
     <main
-      class="flex min-h-[calc(100vh_-_theme(spacing.16))] flex-1 flex-col gap-4 bg-muted/40 p-4 md:gap-8"
+      class="flex min-h-[calc(100vh_-_theme(spacing.16))] flex-1 flex-col gap-4 bg-muted/40 md:gap-8 px-4"
     >
-      <div class="grid w-full max-w-6xl gap-2 mx-auto bg-red-200">
-        <h1 class="text-3xl font-semibold">Settings</h1>
-      </div>
-      <div
-        class="mx-auto grid w-full max-w-6xl items-start gap-6 md:grid-cols-[180px_1fr] lg:grid-cols-[250px_1fr]"
-      >
-        <nav class="grid gap-2 text-sm text-muted-foreground">
-          <template v-for="section in accountSettingsSection" :key="section.sectionName">
-            <nav
-              class="flex-col hidden w-full gap-6 text-lg font-medium md:flex md:flex-col md:items-start md:gap-3 md:text-sm lg:gap-1"
-            >
-              <router-link
-                v-for="(menu, i) in section.menus"
-                :key="i"
-                :to="menu.path"
-                class="w-full"
-                active-class="bg-red-300"
-              >
-                <a
-                  class="flex px-3 py-2 text-sm text-gray-400 duration-300 rounded-md hover:bg-gray-100 hover:text-gray-700"
-                >
-                  {{ menu.title }}
-                </a>
-              </router-link>
-            </nav>
-          </template>
-        </nav>
-        <div class="grid gap-6">
-          <!-- <AccountInfo /> -->
-          <!-- <DefaultTeam /> -->
+      <div class="grid items-start w-full gap-6 mx-auto">
+        <div class="grid w-full gap-6">
+          <!-- <CardTeamMembers class="w-full" /> -->
+          <CardTeamAddMembers class="w-full" />
+          <CardTeamMemberList class="w-full" />
           <!-- <AccountDelete :visible="showDialog" @confirm="handleDelete" @cancel="handleCancel" /> -->
         </div>
       </div>

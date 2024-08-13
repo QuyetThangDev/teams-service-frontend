@@ -31,7 +31,7 @@ const props = defineProps<{
 }>()
 
 const open = ref(false)
-const currentTeamId = computed(() => route.params.id)
+const currentTeamSlug = computed(() => route.params.slug)
 
 const {
   isLoading,
@@ -42,20 +42,22 @@ const {
   queryFn: getTeams
 })
 
+console.log(data)
+
 watch(data, (newVal) => {
   if (newVal) {
-    const currentTeam = newVal.items.find((t) => t.id === currentTeamId.value)
+    const currentTeam = newVal.find((t) => t.id === currentTeamSlug.value)
 
-    if (currentTeamId.value && currentTeam !== undefined) {
+    if (currentTeamSlug.value && currentTeam !== undefined) {
       router.replace({ name: 'Team', params: { id: currentTeam.id } })
       props.setSelectedTeam(currentTeam)
       return
     }
-    if (newVal.items.length === 0) {
+    if (newVal.length === 0) {
       router.replace({ name: 'Empty' })
     }
 
-    props.setSelectedTeam(newVal.items[0])
+    props.setSelectedTeam(newVal[0])
     router.replace({ name: 'Team', params: { id: props.selectedTeam!.id } })
   }
 })
@@ -69,17 +71,17 @@ watch(data, (newVal) => {
         <CommandEmpty>No team found.</CommandEmpty>
         <CommandGroup heading="Teams" :disabled="isLoading" class="flex flex-col gap-1">
           <CommandItem
-            v-for="team in data!.items"
-            :value="team.id"
-            :key="team.id"
+            v-for="team in data!"
+            :value="team.slug"
+            :key="team.slug"
             @click="
               () => {
                 props.setSelectedTeam(team)
-                router.replace({ name: 'Team', params: { id: props.selectedTeam!.id } })
+                router.replace({ name: 'Team', params: { id: props.selectedTeam!.slug } })
                 open = false
               }
             "
-            :class="cn('text-sm', props.selectedTeam?.id === team.id ? 'bg-blue-50' : '')"
+            :class="cn('text-sm', props.selectedTeam?.slug === team.slug ? 'bg-blue-50' : '')"
           >
             <Avatar class="w-5 h-5 mr-2">
               <AvatarImage
@@ -93,7 +95,7 @@ watch(data, (newVal) => {
               :class="
                 cn(
                   'ml-auto h-4 w-4 text-blue-600',
-                  props.selectedTeam?.id === team.id ? 'opacity-100' : 'opacity-0'
+                  props.selectedTeam?.slug === team.slug ? 'opacity-100' : 'opacity-0'
                 )
               "
             />

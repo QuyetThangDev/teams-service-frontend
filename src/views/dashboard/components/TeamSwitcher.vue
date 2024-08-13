@@ -7,7 +7,7 @@ import { computed, ref, watch } from 'vue'
 import { cn } from '@/lib/utils'
 
 import { Check, ChevronsUpDown, CirclePlus, Loader2 } from 'lucide-vue-next'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Avatar, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -38,7 +38,8 @@ const showNewTeamDialog = ref(false)
 const showMembersDialog = ref(false)
 const selectedTeam = ref<Team | null>(null)
 const open = ref(false)
-const currentTeamId = computed(() => route.params.id)
+const currentTeamSlug = computed(() => route.params.slug)
+console.log('currentTeamSlug in TeamSwitcher: ', currentTeamSlug.value)
 
 const {
   isLoading,
@@ -53,9 +54,9 @@ const {
 
 watch(data, (newVal) => {
   if (newVal) {
-    const currentTeam = newVal.items.find((t) => t.id === currentTeamId.value)
+    const currentTeam = newVal.find((t: Team) => t.slug === currentTeamSlug.value)
 
-    if (currentTeamId.value && currentTeam !== undefined) {
+    if (currentTeamSlug.value && currentTeam !== undefined) {
       selectedTeam.value = currentTeam
 
       // Chỉ chuyển hướng nếu không ở trong các route như AccountSettings
@@ -64,13 +65,13 @@ watch(data, (newVal) => {
         router.currentRoute.value.name !== 'AccountOverview' &&
         router.currentRoute.value.name !== 'DomainsSettings'
       ) {
-        router.replace({ name: 'Team', params: { id: selectedTeam.value.id } })
+        router.replace({ name: 'Team', params: { slug: selectedTeam.value!.slug } })
       }
-    } else if (newVal.items.length === 0) {
+    } else if (newVal.length === 0) {
       selectedTeam.value = null
       router.replace({ name: 'Empty' })
     } else {
-      selectedTeam.value = newVal.items[0]
+      selectedTeam.value = newVal[0]
 
       // Chỉ chuyển hướng nếu không ở trong các route như AccountSettings
       if (
@@ -78,7 +79,7 @@ watch(data, (newVal) => {
         router.currentRoute.value.name !== 'AccountOverview' &&
         router.currentRoute.value.name !== 'DomainsSettings'
       ) {
-        router.replace({ name: 'Team', params: { id: selectedTeam.value.id } })
+        router.replace({ name: 'Team', params: { slug: selectedTeam.value.slug } })
       }
     }
   }
@@ -123,17 +124,17 @@ const onContinue = () => {
                   <CommandEmpty>No team found.</CommandEmpty>
                   <CommandGroup heading="Teams" :disabled="isLoading" class="flex flex-col gap-1">
                     <CommandItem
-                      v-for="team in data!.items"
-                      :value="team.id"
-                      :key="team.id"
+                      v-for="team in data!"
+                      :value="team.slug"
+                      :key="team.slug"
                       @click="
                         () => {
                           selectedTeam = team
-                          router.replace({ name: 'Team', params: { id: selectedTeam.id } })
+                          router.replace({ name: 'Team', params: { slug: selectedTeam.slug } })
                           open = false
                         }
                       "
-                      :class="cn('text-sm', selectedTeam?.id === team.id ? 'bg-blue-50' : '')"
+                      :class="cn('text-sm', selectedTeam?.slug === team.slug ? 'bg-blue-50' : '')"
                     >
                       <Avatar class="w-5 h-5 mr-2">
                         <AvatarImage
@@ -147,7 +148,7 @@ const onContinue = () => {
                         :class="
                           cn(
                             'ml-auto h-4 w-4 text-blue-600',
-                            selectedTeam?.id === team.id ? 'opacity-100' : 'opacity-0'
+                            selectedTeam?.slug === team.slug ? 'opacity-100' : 'opacity-0'
                           )
                         "
                       />

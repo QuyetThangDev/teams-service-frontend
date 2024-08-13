@@ -57,95 +57,89 @@ const router = createRouter({
       ]
     },
     {
-      path: '/teams',
-      name: 'Teams',
-      redirect: 'teams/:id/dashboard',
+      path: '',
+      name: 'Team',
+      redirect: ':slug/dashboard',
       component: DashboardLayout,
       meta: {
         authRequired: true
       },
       children: [
         {
-          path: ':id',
+          path: ':slug/dashboard',
           name: 'Team',
-
           meta: {
             subNav: 'navbarTeam'
           },
           component: () => import('@/layouts/team/TeamDashboardLayout.vue'),
           children: [
             {
-              path: 'dashboard',
-              name: 'TeamDashboard',
+              path: '',
+              name: 'TeamDashboardOverview',
               meta: {
                 subNav: 'navbarTeam'
               },
-              component: () => import('@/layouts/team/TeamDashboardLayout.vue')
-            },
-            {
-              path: 'devices',
-              name: 'TeamDevices',
-              meta: {
-                subNav: 'navbarTeam'
-              },
-              component: () => import('@/views/team/teamDevices/TeamDevicesView.vue')
-            },
-            {
-              path: 'settings',
-              name: 'TeamSettings',
-              meta: {
-                subNav: 'navbarTeam'
-              },
-              component: () => import('@/layouts/team/TeamSettingsLayout.vue'),
-              children: [
-                {
-                  path: '',
-                  name: 'TeamSettingsGeneral',
-                  meta: {
-                    subNav: 'navbarTeam'
-                  },
-                  component: () =>
-                    import('@/views/team/teamSettings/components/TeamSettingsGeneralView.vue')
-                },
-                {
-                  path: 'invoices',
-                  name: 'TeamSettingsInvoices',
-                  meta: {
-                    subNav: 'navbarTeam'
-                  },
-                  component: () =>
-                    import('@/views/team/teamSettings/components/TeamSettingsInvoicesView.vue')
-                },
-                {
-                  path: 'Members',
-                  name: 'TeamSettingsMembers',
-                  meta: {
-                    subNav: 'navbarTeam'
-                  },
-                  component: () =>
-                    import('@/views/team/teamSettings/components/TeamSettingsMembersView.vue')
-                },
-                {
-                  path: 'access-groups',
-                  name: 'TeamSettingsAccessGroups',
-                  meta: {
-                    subNav: 'navbarTeam'
-                  },
-                  component: () =>
-                    import('@/views/team/teamSettings/components/TeamSettingsAccessGroupsView.vue')
-                },
-                {
-                  path: 'security',
-                  name: 'TeamSettingsSecurity',
-                  meta: {
-                    subNav: 'navbarTeam'
-                  },
-                  component: () =>
-                    import('@/views/team/teamSettings/components/TeamSettingsSecurityView.vue')
-                }
-              ]
+              component: () => import('@/views/team/teamDashboard/TeamDashboardOverviewView.vue')
             }
           ]
+        },
+        {
+          path: ':slug/settings',
+          name: 'TeamSettings',
+          meta: {
+            subNav: 'navbarTeam'
+          },
+          component: () => import('@/layouts/team/TeamSettingsLayout.vue'),
+          children: [
+            {
+              path: '',
+              name: 'TeamSettingsGeneral',
+              meta: {
+                subNav: 'navbarTeam'
+              },
+              component: () => import('@/views/team/teamSettings/TeamSettingsGeneralView.vue')
+            },
+            {
+              path: 'invoices',
+              name: 'TeamSettingsInvoices',
+              meta: {
+                subNav: 'navbarTeam'
+              },
+              component: () => import('@/views/team/teamSettings/TeamSettingsInvoicesView.vue')
+            },
+            {
+              path: 'members',
+              name: 'TeamSettingsMembers',
+              meta: {
+                subNav: 'navbarTeam'
+              },
+              component: () => import('@/views/team/teamSettings/TeamSettingsMembersView.vue')
+            },
+            {
+              path: 'access-groups',
+              name: 'TeamSettingsAccessGroups',
+              meta: {
+                subNav: 'navbarTeam'
+              },
+              component: () => import('@/views/team/teamSettings/TeamSettingsAccessGroupsView.vue')
+            },
+            {
+              path: 'security',
+              name: 'TeamSettingsSecurity',
+              meta: {
+                subNav: 'navbarTeam'
+              },
+              component: () => import('@/views/team/teamSettings/TeamSettingsSecurityView.vue')
+            }
+          ]
+        },
+        {
+          path: ':slug/devices',
+          name: 'TeamDevices',
+          meta: {
+            subNav: 'navbarTeam'
+          },
+          component: () => import('@/views/team/teamDevices/TeamDevicesView.vue')
         }
       ]
     },

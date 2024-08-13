@@ -3,6 +3,10 @@
     <main
       class="flex mx-auto w-full min-h-[calc(100vh_-_theme(spacing.16))] flex-col gap-4 bg-muted/40 p-4 md:gap-8"
     >
+      <!-- Header -->
+      <div class="grid w-full gap-2 mx-auto">
+        <h1 class="text-3xl font-semibold">Team settings</h1>
+      </div>
       <div class="grid-cols-1 md:grid md:grid-cols-5">
         <!-- Sidebar -->
         <div class="flex flex-col col-span-1 gap-5">
@@ -11,7 +15,7 @@
               <router-link
                 v-for="(menu, i) in section.menus"
                 :key="i"
-                :to="`/teams/${currentTeamId}/settings${menu.path}`"
+                :to="`/${currentTeamSlug}/settings${menu.path}`"
                 class="w-full p-2 text-gray-500 rounded-md hover:text-gray-700 hover:bg-gray-200"
                 exact-active-class="text-gray-700 bg-gray-200"
               >
@@ -35,7 +39,8 @@ import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 
 const route = useRoute()
-const currentTeamId = computed(() => route.params.id)
+const currentTeamSlug = computed(() => route.params.slug)
+console.log('currentTeamSlug', currentTeamSlug.value)
 
 const { sections } = useMenus()
 

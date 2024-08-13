@@ -8,7 +8,7 @@
           <router-link
             v-for="menu in section.menus"
             :key="menu.path"
-            :to="`/teams/${currentTeamId}${menu.path}`"
+            :to="`/${currentTeamSlug}${menu.path}`"
             class="px-3 py-1 text-sm text-gray-400 duration-300 rounded-md hover:bg-gray-100 hover:text-gray-700"
             active-class="px-3 py-1 text-sm text-gray-700 bg-gray-100 rounded-md"
           >
@@ -50,7 +50,8 @@ import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 
 const route = useRoute()
-const currentTeamId = computed(() => route.params.id)
+const currentTeamSlug = computed(() => route.params.slug)
+console.log(currentTeamSlug.value)
 const { sections } = useMenus()
 
 const dashboardMenus = computed(() => {

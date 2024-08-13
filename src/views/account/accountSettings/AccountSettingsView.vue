@@ -74,27 +74,25 @@ const handleCancel = () => {
       <div
         class="mx-auto grid w-full max-w-6xl items-start gap-6 md:grid-cols-[180px_1fr] lg:grid-cols-[250px_1fr]"
       >
-        <nav class="grid gap-2 text-sm text-muted-foreground">
-          <template v-for="section in accountSettingsSection" :key="section.sectionName">
-            <nav
-              class="flex-col hidden w-full gap-6 text-lg font-medium md:flex md:flex-col md:items-start md:gap-3 md:text-sm lg:gap-1"
+        <template v-for="section in accountSettingsSection" :key="section.sectionName">
+          <nav
+            class="flex-col hidden w-full gap-6 text-lg font-medium md:flex md:flex-col md:items-start md:gap-3 md:text-sm lg:gap-1"
+          >
+            <router-link
+              v-for="(menu, i) in section.menus"
+              :key="i"
+              :to="menu.path"
+              class="w-full"
+              active-class="bg-red-300"
             >
-              <router-link
-                v-for="(menu, i) in section.menus"
-                :key="i"
-                :to="menu.path"
-                class="w-full"
-                active-class="bg-red-300"
+              <a
+                class="flex px-3 py-2 text-sm text-gray-400 duration-300 rounded-md hover:bg-gray-100 hover:text-gray-700"
               >
-                <a
-                  class="flex px-3 py-2 text-sm text-gray-400 duration-300 rounded-md hover:bg-gray-100 hover:text-gray-700"
-                >
-                  {{ menu.title }}
-                </a>
-              </router-link>
-            </nav>
-          </template>
-        </nav>
+                {{ menu.title }}
+              </a>
+            </router-link>
+          </nav>
+        </template>
         <div class="grid gap-6">
           <AccountInfo />
           <DefaultTeam />
