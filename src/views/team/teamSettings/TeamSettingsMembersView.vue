@@ -1,7 +1,24 @@
 <script setup lang="ts">
-import CardTeamAddMembers from './components/CardTeamAddMembers.vue'
-import CardTeamMemberList from './components/CardTeamMemberList.vue'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+
+import { onMounted, ref } from 'vue'
+import { columns } from './components/MemberTable/columns'
+import type { TeamMember } from '@/types/team'
+import DataTable from './components/MemberTable/DataTable.vue'
+import membersData from './components/memberfake.json'
+
+const data = ref<TeamMember[]>([])
+
+async function getData(): Promise<TeamMember[]> {
+  console.log(membersData.items)
+
+  return membersData.items as TeamMember[]
+}
+
+onMounted(async () => {
+  data.value = await getData()
+  console.log(data.value)
+})
 </script>
 
 <template>
@@ -20,7 +37,10 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
               <!-- <CardTeamAddMembers /> -->
             </CardHeader>
             <CardContent class="flex flex-col mt-6">
-              <CardTeamMemberList class="w-full" />
+              <!-- <CardTeamMemberList class="w-full" /> -->
+              <div class="container mx-auto">
+                <DataTable :columns="columns" :data="data" />
+              </div>
             </CardContent>
           </Card>
         </div>

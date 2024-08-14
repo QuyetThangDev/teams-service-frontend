@@ -16,9 +16,8 @@ export interface TeamRole {
 
 export interface TeamMember {
   id: string
-  user: UserInfo
-  team: Team
-  role: TeamRole
-  created_at: Date
-  updated_at?: Date
+  first_name: string
+  last_name: string
+  email: string
+  role: string
 }
