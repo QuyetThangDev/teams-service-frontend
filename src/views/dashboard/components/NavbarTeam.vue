@@ -3,14 +3,14 @@
     <header class="sticky top-0 flex items-center h-10 gap-4 px-4 border-b bg-background md:px-6">
       <template v-for="section in dashboardMenus" :key="section.sectionName">
         <nav
-          class="flex-col hidden gap-6 text-lg font-medium md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6"
+          class="flex-col hidden gap-1 text-lg font-medium300 md:flex md:flex-row md:items-center md:text-sm"
         >
           <router-link
             v-for="menu in section.menus"
             :key="menu.path"
             :to="`/${currentTeamSlug}${menu.path}`"
-            class="px-3 py-1 text-sm text-gray-400 duration-300 rounded-md hover:bg-gray-100 hover:text-gray-700"
-            active-class="px-3 py-1 text-sm text-gray-700 bg-gray-100 rounded-md"
+            class="px-3 py-1 text-sm duration-300 rounded-md hover:bg-gray-100 hover:text-black"
+            active-class="px-3 py-1 text-sm text-black bg-gray-200 rounded-md"
           >
             {{ menu.title }}
           </router-link>

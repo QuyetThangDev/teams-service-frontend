@@ -1,63 +1,71 @@
 <template>
   <div>
-    <Card class="p-4 border border-gray-300 shadow-none">
-      <CardHeader class="flex flex-col items-start gap-4 p-4 border-b">
-        <CardTitle> Add members</CardTitle>
-        <CardDescription> Invite new members by email address </CardDescription>
-      </CardHeader>
-      <CardContent class="flex flex-col mt-6">
-        <form @submit.prevent="onSubmit" class="flex flex-col items-center w-full">
-          <div class="grid items-end w-full grid-cols-6 gap-1">
-            <!-- Email input field occupying 4 columns -->
-            <div class="col-span-4">
-              <FormField
-                v-slot="{ componentField }"
-                name="email"
-                class="flex items-center flex-grow min-w-48"
-              >
-                <FormItem class="flex flex-col">
-                  <FormLabel class="text-sm text-gray-500">EMAIL ADDRESS</FormLabel>
-                  <FormControl>
-                    <Input type="text" v-bind="componentField" class="w-full" />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              </FormField>
+    <Dialog>
+      <DialogTrigger asChild>
+        <Button variant="outline" class="gap-1 text-gray-500">
+          <CirclePlus class="w-3.5 h-3.5 text-gray-500" />
+          Add Members
+        </Button>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Add members</DialogTitle>
+          <DialogDescription>Invite new members by email address</DialogDescription>
+        </DialogHeader>
+        <DialogBody>
+          <form @submit.prevent="onSubmit" class="flex flex-col items-center w-full">
+            <div class="grid items-end w-full grid-cols-6 gap-1">
+              <!-- Email input field occupying 4 columns -->
+              <div class="col-span-4">
+                <FormField
+                  v-slot="{ componentField }"
+                  name="email"
+                  class="flex items-center flex-grow min-w-48"
+                >
+                  <FormItem class="flex flex-col">
+                    <FormLabel class="text-sm text-gray-500">EMAIL ADDRESS</FormLabel>
+                    <FormControl>
+                      <Input type="text" v-bind="componentField" class="w-full" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                </FormField>
+              </div>
+              <!-- Role input field occupying 2 columns (hidden or disabled) -->
+              <div class="flex flex-col justify-end col-span-2">
+                <FormField
+                  v-slot="{ componentField }"
+                  name="role"
+                  class="flex items-center flex-grow min-w-48"
+                >
+                  <FormItem class="flex flex-col">
+                    <FormLabel class="text-sm text-gray-500">ROLE</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="text"
+                        v-bind="componentField"
+                        value="Member"
+                        class="w-full"
+                        disabled
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                </FormField>
+              </div>
             </div>
-            <!-- Role input field occupying 2 columns (hidden or disabled) -->
-            <div class="flex flex-col justify-end col-span-2">
-              <FormField
-                v-slot="{ componentField }"
-                name="role"
-                class="flex items-center flex-grow min-w-48"
-              >
-                <FormItem class="flex flex-col">
-                  <FormLabel class="text-sm text-gray-500">ROLE</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="text"
-                      v-bind="componentField"
-                      value="Member"
-                      class="w-full"
-                      disabled
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              </FormField>
-            </div>
-          </div>
-          <CardFooter class="flex justify-end w-full pt-4">
-            <Button type="submit" :disabled="isPending || !isFormValid">
-              <span v-if="isPending">
-                <Loader2 class="w-4 h-4 animate-spin" />
-              </span>
-              <span v-else>Invite</span>
-            </Button>
-          </CardFooter>
-        </form>
-      </CardContent>
-    </Card>
+            <DialogFooter class="flex justify-end w-full pt-4">
+              <Button type="submit" :disabled="isPending || !isFormValid">
+                <span v-if="isPending">
+                  <Loader2 class="w-4 h-4 animate-spin" />
+                </span>
+                <span v-else>Invite</span>
+              </Button>
+            </DialogFooter>
+          </form>
+        </DialogBody>
+      </DialogContent>
+    </Dialog>
   </div>
 </template>
 
@@ -73,9 +81,16 @@ import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/comp
 import { useMutation } from '@tanstack/vue-query'
 import { useToast } from '@/components/ui/toast'
 import { addMember } from '@/api/teams'
-import { Loader2 } from 'lucide-vue-next'
-import { Card, CardContent, CardDescription } from '@/components/ui/card'
-import CardTitle from '@/components/ui/card/CardTitle.vue'
+import { CirclePlus, Loader2 } from 'lucide-vue-next'
+import {
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter
+} from '@/components/ui/dialog'
 
 const { toast } = useToast()
 

@@ -11,15 +11,7 @@
         </div>
       </CardHeader>
       <CardContent class="flex flex-col mt-6">
-        <span v-if="isPending">
-          <LoadingSpinner />
-        </span>
-        <span v-else-if="isError">Error: {{ error!.message }}</span>
-        <form
-          v-else-if="currentUser"
-          @submit.prevent="onSubmit"
-          class="flex flex-col items-center justify-center gap-4"
-        >
+        <form @submit.prevent="onSubmit" class="flex flex-col items-center justify-center gap-4">
           <FormField
             v-slot="{ componentField }"
             name="teamName"
@@ -66,22 +58,17 @@
 
 <script setup lang="ts">
 import { toTypedSchema } from '@vee-validate/zod'
-import { computed, watch } from 'vue'
+import { watch } from 'vue'
 import { useMutation, useQuery } from '@tanstack/vue-query'
-import { useForm } from 'vee-validate'
+import { useForm, validate } from 'vee-validate'
 import * as z from 'zod'
 import { useTeamStore } from '@/stores/teamStore'
 
 import { Card, CardContent, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
-import LoadingSpinner from '@/components/LoadingSpinner.vue'
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
-
 import { useToast } from '@/components/ui/toast'
-import { getCurrentUser } from '@/api/users'
-import { updateUser } from '@/api/auth'
-import { NAME_REGEX } from '@/constants/regex'
 import { storeToRefs } from 'pinia'
 import { updateTeam } from '@/api/teams'
 
@@ -91,22 +78,12 @@ const { team } = storeToRefs(store)
 
 const formSchema = toTypedSchema(
   z.object({
-    teamName: z.string().min(1, 'Last name is required').max(20, 'Max 20 characters'),
+    teamName: z.string().min(1, 'Team name is required').max(20, 'Max 20 characters'),
     description: z.string().optional()
   })
 )
 
-const {
-  isPending,
-  isError,
-  data: currentUser,
-  error
-} = useQuery({
-  queryKey: ['user'],
-  queryFn: getCurrentUser
-})
-
-const { handleSubmit, meta, errors, validate, resetForm } = useForm({
+const form = useForm({
   initialValues: {
     teamName: '',
     description: ''
@@ -114,16 +91,17 @@ const { handleSubmit, meta, errors, validate, resetForm } = useForm({
   validationSchema: formSchema
 })
 
-watch(team, (newVal) => {
-  if (newVal) {
-    resetForm({
-      values: {
-        teamName: newVal.name,
-        description: newVal.description
-      }
-    })
-  }
-})
+// Watch for team changes and update form fields
+watch(
+  team,
+  (newVal) => {
+    if (newVal) {
+      form.setFieldValue('teamName', newVal.name)
+      form.setFieldValue('description', newVal.description || '')
+    }
+  },
+  { immediate: true }
+)
 
 const {
   isPending: isUpdatePending,
@@ -135,7 +113,7 @@ const {
   mutationFn: (team: { teamName: string; description?: string }) => {
     return updateTeam(team)
   },
-  onSuccess: (data: any) => {
+  onSuccess: () => {
     toast({
       title: 'Update successful'
     })
@@ -148,15 +126,10 @@ const {
   }
 })
 
-const onSubmit = handleSubmit(async (values) => {
-  const isValid = await validate()
-  if (isValid) {
-    mutate({
-      teamName: values.teamName,
-      description: values.description
-    })
-  } else {
-    return
-  }
+const onSubmit = form.handleSubmit(async (values) => {
+  mutate({
+    teamName: values.teamName,
+    description: values.description
+  })
 })
 </script>

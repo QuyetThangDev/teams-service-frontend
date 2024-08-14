@@ -1,69 +1,7 @@
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue'
-import { useQuery } from '@tanstack/vue-query'
-import { toTypedSchema } from '@vee-validate/zod'
-import * as z from 'zod'
-import { useForm } from 'vee-validate'
-import useMenus from '@/hooks/useMenus'
-
-import { getCurrentUser } from '@/api/users'
-import CardTeamInfo from './components/CardTeamInfo.vue'
-import CardTeamDelete from './components/CardTeamDelete.vue'
-import CardTeamMembers from './components/CardTeamMembers.vue'
 import CardTeamAddMembers from './components/CardTeamAddMembers.vue'
 import CardTeamMemberList from './components/CardTeamMemberList.vue'
-// import AccountDelete from '../../components/AccountDelete.vue'
-// import TeamsInfo from '../../components/TeamsInfo.vue'
-// import DialogDeleteAccount from './components/DialogDeleteAccount.vue'
-
-const { sections } = useMenus()
-
-const accountSettingsSection = computed(() => {
-  return sections.filter((section) => section.sectionName === 'Account Settings')
-})
-const formSchema = toTypedSchema(
-  z.object({
-    firstName: z.string().min(1, 'First name is required'),
-    lastName: z.string().min(1, 'Last name is required')
-  })
-)
-
-const {
-  isLoading,
-  isError,
-  data: currentUser,
-  error
-} = useQuery({
-  queryKey: ['user'],
-  queryFn: getCurrentUser
-})
-
-const form = useForm({
-  initialValues: {
-    firstName: '',
-    lastName: ''
-  },
-  validationSchema: formSchema
-})
-
-watch(currentUser, (newVal) => {
-  if (newVal) {
-    form.setValues({
-      firstName: newVal.data.first_name,
-      lastName: newVal.data.last_name
-    })
-  }
-})
-
-const showDialog = ref(false)
-
-const handleDelete = () => {
-  showDialog.value = false
-}
-
-const handleCancel = () => {
-  showDialog.value = false
-}
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 </script>
 
 <template>
@@ -73,10 +11,18 @@ const handleCancel = () => {
     >
       <div class="grid items-start w-full gap-6 mx-auto">
         <div class="grid w-full gap-6">
-          <!-- <CardTeamMembers class="w-full" /> -->
-          <CardTeamAddMembers class="w-full" />
-          <CardTeamMemberList class="w-full" />
-          <!-- <AccountDelete :visible="showDialog" @confirm="handleDelete" @cancel="handleCancel" /> -->
+          <Card class="border border-gray-300 shadow-none">
+            <CardHeader class="flex flex-row items-center justify-between w-full p-6 border-b">
+              <div class="flex flex-col items-start gap-2 py-2">
+                <CardTitle> Team Members </CardTitle>
+                <span class="text-sm text-gray-500"> Manage team members and invitations </span>
+              </div>
+              <!-- <CardTeamAddMembers /> -->
+            </CardHeader>
+            <CardContent class="flex flex-col mt-6">
+              <CardTeamMemberList class="w-full" />
+            </CardContent>
+          </Card>
         </div>
       </div>
     </main>

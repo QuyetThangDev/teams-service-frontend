@@ -30,6 +30,7 @@ const { isPending, isError, error, isSuccess, mutate } = useMutation({
       title: 'Login successful',
       description: 'You have successfully logged in.'
     })
+    // Redirect to dashboard
     router.push({ name: 'Dashboard' })
   },
   onError: (data: any) => {

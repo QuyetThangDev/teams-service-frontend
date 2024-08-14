@@ -1,173 +1,256 @@
 <template>
-  <div>
-    <!-- <Card class="bg-transparent shadow-none">
-      <CardContent class="flex flex-col mt-6"> -->
-    <div class="flex flex-col">
-      <!-- Tabs component wrapping both TabsList and TabsContent -->
-      <Tabs default-value="teamMembers" class="flex flex-col flex-grow">
-        <!-- TabsList with fixed width -->
-        <div class="w-[400px]">
-          <TabsList class="grid w-full grid-cols-2">
-            <CustomTabsTrigger value="teamMembers">Team Members</CustomTabsTrigger>
-            <CustomTabsTrigger value="pendingInvitations">Pending Invitations</CustomTabsTrigger>
-          </TabsList>
-        </div>
-
-        <!-- TabsContent taking full width -->
-        <div class="flex-grow">
-          <TabsContent value="teamMembers">
-            <Card class="border border-gray-300 shadow-none">
-              <CardHeader class="flex flex-row items-center gap-4 p-6 border-b">
-                <CardTitle>Team Members</CardTitle>
-                <CardDescription>
-                  Make changes to your account here. Click save when you're done.
-                </CardDescription>
-              </CardHeader>
-              <CardContent class="space-y-2">
-                <div class="space-y-1">
-                  <Label for="name">Name</Label>
-                  <Input id="name" default-value="Pedro Duarte" />
-                </div>
-                <div class="space-y-1">
-                  <Label for="username">Username</Label>
-                  <Input id="username" default-value="@peduarte" />
-                </div>
-              </CardContent>
-              <CardFooter>
-                <Button>Save changes</Button>
-              </CardFooter>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="pendingInvitations">
-            <Card>
-              <CardHeader>
-                <CardTitle>Pending Invitations</CardTitle>
-                <CardDescription>
-                  Change your password here. After saving, you'll be logged out.
-                </CardDescription>
-              </CardHeader>
-              <CardContent class="space-y-2">
-                <div class="space-y-1">
-                  <Label for="current">Current password</Label>
-                  <Input id="current" type="password" />
-                </div>
-                <div class="space-y-1">
-                  <Label for="new">New password</Label>
-                  <Input id="new" type="password" />
-                </div>
-              </CardContent>
-              <CardFooter>
-                <Button>Save password</Button>
-              </CardFooter>
-            </Card>
-          </TabsContent>
-        </div>
-      </Tabs>
+  <Tabs default-value="teamMembers" class="flex flex-col flex-grow">
+    <div class="grid items-center justify-between w-full grid-cols-4 gap-2 mb-4">
+      <div class="col-span-2">
+        <TabsList class="grid w-[300px] gap-4 grid-cols-2">
+          <CustomTabsTrigger value="teamMembers" class="text-left">Team Members</CustomTabsTrigger>
+          <CustomTabsTrigger value="pendingInvitations" class="text-left"
+            >Pending Invitations</CustomTabsTrigger
+          >
+        </TabsList>
+      </div>
+      <div class="flex flex-row justify-end col-span-2 gap-2">
+        <RoleFilterPopover :roles="roleList" />
+        <CardTeamAddMembers />
+      </div>
     </div>
-    <!-- </CardContent>
-    </Card> -->
-  </div>
+
+    <div class="flex-grow">
+      <TabsContent value="teamMembers">
+        <Card class="shadow-none">
+          <CardContent class="p-0">
+            <ScrollArea class="w-full whitespace-nowrap">
+              <ScrollArea class="h-[64vh] w-full relative">
+                <Table class="w-full shadow-none">
+                  <TableBody>
+                    <!-- Loop through paginatedMembers and render each member -->
+                    <TableRow v-for="member in paginatedMembers" :key="member.id">
+                      <TableCell>{{ member.first_name }}</TableCell>
+                      <TableCell>{{ member.last_name }}</TableCell>
+                      <TableCell>{{ member.email }}</TableCell>
+                      <TableCell>{{ member.role }}</TableCell>
+                    </TableRow>
+                  </TableBody>
+                </Table>
+                <ScrollBar orientation="vertical" />
+              </ScrollArea>
+              <ScrollBar orientation="horizontal" />
+            </ScrollArea>
+          </CardContent>
+          <CardFooter class="flex items-end justify-end flex-1 mr-4">
+            <div class="flex space-x-6">
+              <div class="flex items-center gap-1 text-sm text-muted-foreground">
+                <span class="sr-only sm:not-sr-only">Items per page:</span>
+                <Select>
+                  <SelectTrigger class="w-[70px]">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectItem
+                        v-for="size in ITEM_PER_PAGES"
+                        :key="size"
+                        :value="size.toString()"
+                      >
+                        {{ size }}
+                      </SelectItem>
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div class="flex w-[100px] items-center justify-center text-sm font-medium"></div>
+              <Pagination
+                :total="totalCount"
+                :page="currentPage"
+                :page-size="pageSize"
+                @change="handlePageChange"
+              >
+                <PaginationList class="flex items-center gap-1">
+                  <PaginationFirst :disabled="isFirstPage" @click="goToPage(1)" />
+                  <PaginationPrev :disabled="isFirstPage" @click="prevPage" />
+                  <PaginationNext :disabled="isLastPage" @click="nextPage" />
+                  <PaginationLast :disabled="isLastPage" @click="goToPage(totalPages)" />
+                </PaginationList>
+              </Pagination>
+            </div>
+          </CardFooter>
+        </Card>
+      </TabsContent>
+
+      <TabsContent value="pendingInvitations">
+        <Card class="shadow-none">
+          <CardContent class="p-0">
+            <ScrollArea class="w-full whitespace-nowrap">
+              <ScrollArea class="h-[64vh] w-full relative">
+                <Table class="w-full shadow-none">
+                  <TableBody>
+                    <!-- Pending invitations content -->
+                    <TableRow>
+                      <TableCell v-if="team">{{ team.name }}</TableCell>
+                      <TableCell v-else>N/A</TableCell>
+                      <TableCell v-if="team">{{ team.description }}</TableCell>
+                      <TableCell v-else>No description available</TableCell>
+                    </TableRow>
+                  </TableBody>
+                </Table>
+                <ScrollBar orientation="vertical" />
+              </ScrollArea>
+              <ScrollBar orientation="horizontal" />
+            </ScrollArea>
+          </CardContent>
+          <CardFooter class="flex items-end justify-end flex-1 mr-4">
+            <div class="flex space-x-6">
+              <div class="flex items-center gap-1 text-sm text-muted-foreground">
+                <span class="sr-only sm:not-sr-only">Items per page:</span>
+                <Select>
+                  <SelectTrigger class="w-[70px]">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectItem
+                        v-for="size in ITEM_PER_PAGES"
+                        :key="size"
+                        :value="size.toString()"
+                      >
+                        {{ size }}
+                      </SelectItem>
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div class="flex w-[100px] items-center justify-center text-sm font-medium"></div>
+              <Pagination
+                :total="totalCount"
+                :page="currentPage"
+                :page-size="pageSize"
+                @change="handlePageChange"
+              >
+                <PaginationList class="flex items-center gap-1">
+                  <PaginationFirst :disabled="isFirstPage" @click="goToPage(1)" />
+                  <PaginationPrev :disabled="isFirstPage" @click="prevPage" />
+                  <PaginationNext :disabled="isLastPage" @click="nextPage" />
+                  <PaginationLast :disabled="isLastPage" @click="goToPage(totalPages)" />
+                </PaginationList>
+              </Pagination>
+            </div>
+          </CardFooter>
+        </Card>
+      </TabsContent>
+    </div>
+  </Tabs>
 </template>
 
 <script setup lang="ts">
-import { toTypedSchema } from '@vee-validate/zod'
-import { reactive, ref, watch } from 'vue'
-import { useMutation, useQuery } from '@tanstack/vue-query'
-import { useForm } from 'vee-validate'
-import * as z from 'zod'
+import { ref, computed, watch, onMounted } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import { storeToRefs } from 'pinia'
 
-import { Card, CardContent, CardFooter, CardTitle } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import { Button } from '@/components/ui/button'
-import { Label } from '@/components/ui/label'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Card, CardContent, CardFooter } from '@/components/ui/card'
+import { Tabs, TabsContent, TabsList } from '@/components/ui/tabs'
 import CustomTabsTrigger from '@/views/team/teamSettings/components/CustomTabsTrigger.vue'
+import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table'
+import {
+  Pagination,
+  PaginationFirst,
+  PaginationLast,
+  PaginationList,
+  PaginationNext,
+  PaginationPrev
+} from '@/components/ui/pagination'
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
 
-import { useToast } from '@/components/ui/toast'
-import { getCurrentUser } from '@/api/users'
-import { updateUser } from '@/api/auth'
-import LoadingSpinner from '@/components/LoadingSpinner.vue'
-import { NAME_REGEX } from '@/constants/regex'
+import { useTeamStore } from '@/stores/teamStore'
+import membersfake from './memberfake.json' // Giả lập API, thay thế khi có API thật
+import RoleFilterPopover from './RoleFilterPopover.vue'
+import type { TeamMember, TeamRole } from '@/types/team'
+import CardTeamAddMembers from './CardTeamAddMembers.vue'
 
-const { toast } = useToast()
+const ITEM_PER_PAGES = [10, 20, 30, 40, 50]
 
-const formSchema = toTypedSchema(
-  z.object({
-    firstName: z
-      .string()
-      .min(1, 'Last name is required')
-      .max(20, 'Max 20 characters')
-      .regex(NAME_REGEX, 'Only letters allowed'),
-    lastName: z
-      .string()
-      .min(1, 'Last name is required')
-      .max(20, 'Max 20 characters')
-      .regex(NAME_REGEX, 'Only letters allowed')
-  })
-)
+const route = useRoute()
+const router = useRouter()
+const store = useTeamStore()
+const { team } = storeToRefs(store)
 
-const {
-  isPending,
-  isError,
-  data: currentUser,
-  error
-} = useQuery({
-  queryKey: ['user'],
-  queryFn: getCurrentUser
-})
+const roleList = ref<TeamRole[]>([])
+const paginatedMembers = ref<any[]>([])
 
-const { handleSubmit, meta, errors, validate, resetForm } = useForm({
-  initialValues: {
-    firstName: '',
-    lastName: ''
-  },
-  validationSchema: formSchema
-})
+const defaultPageSize = 6
+const defaultPage = 1
 
-watch(currentUser, (newVal) => {
-  if (newVal) {
-    resetForm({
-      values: {
-        firstName: newVal.data.first_name,
-        lastName: newVal.data.last_name
-      }
-    })
+const pageSize = ref(parseInt(route.query.pageSize as string) || defaultPageSize)
+const currentPage = ref(parseInt(route.query.page as string) || defaultPage)
+const totalCount = ref(0)
+
+async function fetchData(pageSize: number, page: number) {
+  const start = (page - 1) * pageSize
+  const end = start + pageSize
+
+  const response = membersfake
+  totalCount.value = response.total
+  return response.items.slice(start, end)
+}
+
+async function fetchRoles() {
+  const data = await fetchData(pageSize.value, currentPage.value)
+  const rolesSet = new Set<string>()
+  data.forEach((member) => rolesSet.add(member.role))
+  const uniqueRoles = Array.from(rolesSet)
+
+  // Update roleList with unique roles
+  roleList.value = uniqueRoles.map((role) => ({ name: role }))
+}
+
+async function loadData() {
+  const data = await fetchData(pageSize.value, currentPage.value)
+  await fetchRoles() // Update roleList here
+  paginatedMembers.value = data
+  console.log('Roles', roleList.value)
+}
+
+onMounted(() => {
+  if (!route.query.page || !route.query.pageSize) {
+    router.replace({ query: { page: defaultPage, pageSize: defaultPageSize } })
   }
+  loadData()
 })
 
-const {
-  isPending: isUpdatePending,
-  isError: isUpdateError,
-  error: updateError,
-  isSuccess: isUpdateSuccess,
-  mutate
-} = useMutation({
-  mutationFn: (user: { first_name: string; last_name: string }) => {
-    return updateUser(user)
-  },
-  onSuccess: (data: any) => {
-    toast({
-      title: 'Update successful'
-    })
-  },
-  onError: (error: any) => {
-    toast({
-      title: 'Update failed',
-      description: error.message
-    })
-  }
+watch([pageSize, currentPage], () => {
+  router.push({ query: { pageSize: pageSize.value, page: currentPage.value } })
+  loadData()
 })
 
-const onSubmit = handleSubmit(async (values) => {
-  const isValid = await validate()
-  if (isValid) {
-    mutate({
-      first_name: values.firstName,
-      last_name: values.lastName
-    })
-  } else {
-    return
+const totalPages = computed(() => Math.ceil(totalCount.value / pageSize.value))
+const isFirstPage = computed(() => currentPage.value === 1)
+const isLastPage = computed(() => currentPage.value === totalPages.value)
+
+function handlePageChange(newPage: number) {
+  currentPage.value = newPage
+}
+
+function goToPage(page: number) {
+  if (page >= 1 && page <= totalPages.value) {
+    currentPage.value = page
   }
-})
+}
+
+function prevPage() {
+  if (!isFirstPage.value) {
+    currentPage.value -= 1
+  }
+}
+
+function nextPage() {
+  if (!isLastPage.value) {
+    currentPage.value += 1
+  }
+}
 </script>
